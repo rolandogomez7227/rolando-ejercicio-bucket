@@ -3,22 +3,27 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Instalando dependencias de Docker...
+      - echo Instalando...
   pre_build:
     commands:
-      - echo Creando imagen de Docker...
+      - echo Construyendo imagen...
       - docker build -t ejercicio3-app .
   build:
     commands:
-      - echo Ejecutando el contenedor...
-      - docker run -e VERSION_ID=$VERSION_ID --name mi_contenedor ejercicio3-app
-      - docker cp mi_contenedor:/app/backup.log .
-      - docker cp mi_contenedor:/app/resultados.json .
+      - echo Ejecutando contenedor...
+      # Agregamos "|| true" para que si el python falla, el build no se detenga de golpe 
+      # y podamos ver qué pasó dentro
+      - docker run -e VERSION_ID=$VERSION_ID --name mi_contenedor ejercicio3-app || true
+      - echo Extrayendo archivos del contenedor...
+      - docker cp mi_contenedor:/app/backup.log . || echo "El log no existe"
+      - docker cp mi_contenedor:/app/resultados.json . || echo "Resultados no existen"
   post_build:
     commands:
-      - echo Subiendo logs a S3...
-      - aws s3 cp backup.log s3://rolando-ejercicio-bucket/logs/
-      - aws s3 cp resultados.json s3://rolando-ejercicio-bucket/resultados/
+      - echo Subiendo a S3...
+      # Solo intenta subir si el archivo existe
+      - if [ -f backup.log ]; then aws s3 cp backup.log s3://rolando-ejercicio-bucket/logs/; fi
+      - if [ -f resultados.json ]; then aws s3 cp resultados.json s3://rolando-ejercicio-bucket/resultados/; fi
+
 artifacts:
   files:
     - backup.log
