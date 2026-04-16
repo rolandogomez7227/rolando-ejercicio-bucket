@@ -1,11 +1,10 @@
-FROM python:3.9-slim
+# Usamos el repositorio público de AWS para evitar el bloqueo de Docker Hub
+FROM public.ecr.aws/docker/library/python:3.9-slim
 
-# Establecemos el directorio de trabajo
 WORKDIR /app
 
-# Copiamos cada archivo de forma individual asegurando el destino
-COPY app.py /app/app.py
-COPY datos.json /app/datos.json
+# Copiamos los archivos (Asegúrate que existan en GitHub)
+COPY app.py .
+COPY datos.json .
 
-# Ejecutamos con la ruta absoluta
-ENTRYPOINT ["python", "/app/app.py"] 
+CMD ["python", "app.py"]
