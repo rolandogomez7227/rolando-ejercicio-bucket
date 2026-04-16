@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "nombre": "Rolando",
+        "status": "activo"
+    },
+    {
+        "id": 2,
+        "nombre": "Prueba Error",
+        "status": "inactivo"
+    },
+    {
+        "id": 3,
+        "nombre": "Servidor EC2",
+        "status": "activo"
+    }
+]
